@@ -3,6 +3,7 @@ import random
 import numpy as np
 from units import unit_data
 import copy
+import datetime
 
 # Order in which casualties are selected for attacking
 attack_casualty_prefs = ["I", "A", "S", "F", "B", "BB", "AC"]
@@ -12,19 +13,18 @@ defend_casualty_prefs = ["I", "A", "S", "B", "F", "AC", "BB"]
 
 RUNS = 1000
 
-print(unit_data.keys())
+print(datetime.datetime.now())
 
 
 class Forces:
-
     def __init__(self, I=0, A=0, F=0, B=0, S=0, BB=0, AC=0, attacking=True):
-        self.I = I      # Infantry
-        self.A = A      # Armor
-        self.B = B      # Bombers
-        self.F = F      # Fighters
-        self.S = S      # Submarines
-        self.BB = BB    # Battleships
-        self.AC = AC    # Aircraft Carriers
+        self.I = I  # Infantry
+        self.A = A  # Armor
+        self.B = B  # Bombers
+        self.F = F  # Fighters
+        self.S = S  # Submarines
+        self.BB = BB  # Battleships
+        self.AC = AC  # Aircraft Carriers
         self.attacking = attacking
 
     def land_forces_count(self):
@@ -34,11 +34,13 @@ class Forces:
         return self.I + self.A + self.B + self.F + self.BB + self.S + self.AC
 
     def kill(self, key):
+        print(f"Killed a {unit_data[key]['name']}")
         self.__dict__[key] = self.__dict__[key] - 1
 
     def _choose_casuality(self):
         global attack_casualty_prefs
         global defend_casualty_prefs
+        assert(len(self))
         if self.attacking:
             prefs = attack_casualty_prefs
         else:
@@ -51,17 +53,14 @@ class Forces:
 
     def choose_casualties(self, num):
         "Remove least preferred unit first"
-        while num:
+        while len(self) and num:
             if self._choose_casuality():
                 num = num - 1
-            else:
-                return False
-        return True
 
 
 def battle(attackers, defenders, runs=RUNS):
-    assert(type(attackers) == Forces)
-    assert(type(defenders) == Forces)
+    assert type(attackers) == Forces
+    assert type(defenders) == Forces
 
     attacker_wins = 0
     defender_wins = 0
@@ -77,14 +76,15 @@ def battle(attackers, defenders, runs=RUNS):
 
         attackers = copy.copy(at)
         defenders = copy.copy(de)
+
         while len(attackers) and len(defenders):
             print(f"{len(attackers)} attackers vs. {len(defenders)} defenders")
             rounds += 1
             # print("Attacker rolls:")
-            for k in unit_data.keys():
-                n = attackers.__dict__[k]
-                unit_type = unit_data[k]["name"]
-                hit_score = unit_data[k]["attack"]
+            for j in unit_data.keys():
+                n = attackers.__dict__[j]
+                unit_type = unit_data[j]["name"]
+                hit_score = unit_data[j]["attack"]
                 if n:
                     print(f"Attacker has {n} {unit_type}")
                     ahits = roll_dice(n, hit_score)
@@ -96,31 +96,40 @@ def battle(attackers, defenders, runs=RUNS):
                 if n:
                     print(f"Defender has {n} {unit_type}")
                     dhits = roll_dice(n, hit_score)
-            # print(f"Attacker hits {ahits} times")
-            defenders.choose_casualties(ahits)
-            # print(f"Defender hits {dhits} times")
-            attackers.choose_casualties(dhits)
+            print(f"Attacker hits {ahits} times with {len(attackers)} units")
+            print(f"Defender hits {dhits} times with {len(defenders)} units")
+            print("Attacker...")
+            if ahits:
+                defenders.choose_casualties(ahits)
+            else:
+                print("Misses.")
+            print("Defender...")
+            if dhits:
+                attackers.choose_casualties(dhits)
+            else:
+                print("Misses.")
 
-        if len(attackers):
+        if not len(defenders):
             if attackers.land_forces_count():
                 attacker_wins += 1
                 attacker_units_left += len(attackers)
-                print("Attacker wins")
+                print("************Attacker wins")
         else:
             defender_wins += 1
             defender_units_left += len(defenders)
-            print("Defender wins.")
+            print("*************Defender wins")
 
-    avg_rounds = float(rounds)/runs
+    avg_rounds = float(rounds) / runs
 
-    prob_attacker_wins = float(attacker_wins) / \
-        float(attacker_wins + defender_wins)
+    prob_attacker_wins = float(attacker_wins) / float(attacker_wins + defender_wins)
     prob_defender_wins = 1.0 - prob_attacker_wins
 
-    avg_attacker_units_left = float(attacker_units_left)/runs
-    avg_defender_units_left = float(defender_units_left)/runs
+    avg_attacker_units_left = float(attacker_units_left) / runs
+    avg_defender_units_left = float(defender_units_left) / runs
 
-    print(f"in {runs} battles the attackers won {attacker_wins} times and the defenders won {defender_wins} times in an average of {avg_rounds:.2f} rounds.\nAttacker probability {prob_attacker_wins:.3f} with average of {avg_attacker_units_left:.2f} units left, defender {prob_defender_wins:.3f} with average of {avg_defender_units_left:.2f} units left.")
+    print(
+        f"in {runs} battles the attackers won {attacker_wins} times and the defenders won {defender_wins} times in an average of {avg_rounds:.2f} rounds.\nAttacker probability {prob_attacker_wins:.3f} with average of {avg_attacker_units_left:.2f} units left, defender {prob_defender_wins:.3f} with average of {avg_defender_units_left:.2f} units left."
+    )
 
 
 def roll_dice(num, hit_score=1):
@@ -132,5 +141,5 @@ def roll_dice(num, hit_score=1):
 
 
 attacking_army = Forces(I=2, A=2, F=0, B=0, attacking=True)
-defending_army = Forces(I=4, A=0, F=0, B=1, attacking=False)
+defending_army = Forces(I=4, A=0, F=0, B=0, attacking=False)
 battle(attacking_army, defending_army)
