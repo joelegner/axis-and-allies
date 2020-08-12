@@ -1,14 +1,14 @@
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 import random
-import numpy as np
-from units import unit_data
+import numpy as np # type: ignore
+from units import unit_data # type: ignore
 import copy
-from forces import Forces
-from forces import defend_casualty_prefs
-from forces import attack_casualty_prefs
+from forces import Forces # type: ignore
+from forces import defend_casualty_prefs # type: ignore
+from forces import attack_casualty_prefs # type: ignore
 
 
-def battle(attackers, defenders, runs=1000):
+def battle(attackers: Forces, defenders: Forces, runs:int=1000):
     assert type(attackers) == Forces
     assert type(defenders) == Forces
 

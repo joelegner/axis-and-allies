@@ -1,4 +1,5 @@
-from units import unit_data
+from units import unit_data # type: ignore
+from typing import Sized
 
 # Order in which casualties are selected for attacking
 attack_casualty_prefs = ["I", "A", "S", "F", "B", "BB", "AC"]
@@ -28,7 +29,7 @@ class Forces:
     def land_forces_count(self):
         return self.I + self.A
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.I + self.A + self.B + self.F + self.BB + self.S + self.AC
 
     def kill(self, key):

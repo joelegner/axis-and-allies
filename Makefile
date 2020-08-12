@@ -15,9 +15,13 @@ clean:
 	@echo "TODO: Add cleaning code to Makefile."
 
 .PHONY: test
-test:
+test: mypy
 	pipenv run pytest --cov=axisandallies --cov-report html
 
 .PHONY: coverage
 coverage: test
 	open htmlcov/index.html
+
+.PHONY: mypy
+mypy:
+	pipenv run mypy axisandallies
