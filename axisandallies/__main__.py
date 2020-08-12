@@ -74,12 +74,17 @@ def battle(attackers, defenders, runs=RUNS):
     rounds = 0
     for r in range(0, runs):
 
+        print(f"************Start run #{r+1} of {runs}")
+
         attackers = copy.copy(at)
         defenders = copy.copy(de)
 
         while len(attackers) and len(defenders):
             print(f"{len(attackers)} attackers vs. {len(defenders)} defenders")
             rounds += 1
+            print(f"=========== Round {rounds}")
+            ahits = 0
+            dhits = 0
             # print("Attacker rolls:")
             for j in unit_data.keys():
                 n = attackers.__dict__[j]
@@ -87,7 +92,7 @@ def battle(attackers, defenders, runs=RUNS):
                 hit_score = unit_data[j]["attack"]
                 if n:
                     print(f"Attacker has {n} {unit_type}")
-                    ahits = roll_dice(n, hit_score)
+                    ahits += roll_dice(n, hit_score)
             # print("Defender rolls:")
             for k in unit_data.keys():
                 n = defenders.__dict__[k]
@@ -95,7 +100,7 @@ def battle(attackers, defenders, runs=RUNS):
                 hit_score = unit_data[k]["defend"]
                 if n:
                     print(f"Defender has {n} {unit_type}")
-                    dhits = roll_dice(n, hit_score)
+                    dhits += roll_dice(n, hit_score)
             print(f"Attacker hits {ahits} times with {len(attackers)} units")
             print(f"Defender hits {dhits} times with {len(defenders)} units")
             print("Attacker...")
@@ -109,15 +114,18 @@ def battle(attackers, defenders, runs=RUNS):
             else:
                 print("Misses.")
 
-        if not len(defenders):
-            if attackers.land_forces_count():
-                attacker_wins += 1
-                attacker_units_left += len(attackers)
-                print("************Attacker wins")
-        else:
+        defender_won = True
+        if not len(defenders) and attackers.land_forces_count():
+            defender_won = False
+
+        if defender_won:
             defender_wins += 1
             defender_units_left += len(defenders)
-            print("*************Defender wins")
+            print("Defender wins************")
+        else:
+            attacker_wins += 1
+            attacker_units_left += len(attackers)
+            print("Attacker wins************")
 
     avg_rounds = float(rounds) / runs
 
