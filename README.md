@@ -18,6 +18,7 @@ $ pipenv run python axisandallies
 ## To-Do
 
 - [ ] Implement command line entry of numbers of units.
+- [ ] See if there is a correlation between the total hit dice of each side or the difference between them to determine if we can create a rule of thumb for decision making.
 - [x] Figure out why adding a bomber to defenders decreases their win probability.
 
 ## Implemented Units
