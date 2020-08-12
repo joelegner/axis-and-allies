@@ -27,6 +27,14 @@ class Forces:
         self.AC = AC  # Aircraft Carriers
         self.attacking = attacking
 
+    def __str__(self):
+        retval = ""
+        for k in unit_data.keys():
+            num = self.__dict__[k]
+            if num:
+                retval = retval + f"{num} {unit_data[k]['name']} "
+        return retval.strip()
+
     def land_forces_count(self):
         return self.I + self.A
 
@@ -34,7 +42,7 @@ class Forces:
         return self.I + self.A + self.B + self.F + self.BB + self.S + self.AC
 
     def kill(self, key):
-        print(f"Killed a {unit_data[key]['name']}")
+        print(f"Killed 1 {unit_data[key]['name']}", end = ' ')
         self.__dict__[key] = self.__dict__[key] - 1
 
     def _choose_casuality(self):
@@ -76,13 +84,15 @@ def battle(attackers, defenders, runs=RUNS):
 
         print(f"************Start run #{r+1} of {runs}")
 
+
         attackers = copy.copy(at)
         defenders = copy.copy(de)
 
         while len(attackers) and len(defenders):
-            print(f"{len(attackers)} attackers vs. {len(defenders)} defenders")
             rounds += 1
             print(f"=========== Round {rounds}")
+            print("Attackers: %s" % attackers)
+            print("Defenders: %s" % defenders)
             ahits = 0
             dhits = 0
             # print("Attacker rolls:")
@@ -91,7 +101,6 @@ def battle(attackers, defenders, runs=RUNS):
                 unit_type = unit_data[j]["name"]
                 hit_score = unit_data[j]["attack"]
                 if n:
-                    print(f"Attacker has {n} {unit_type}")
                     ahits += roll_dice(n, hit_score)
             # print("Defender rolls:")
             for k in unit_data.keys():
@@ -99,18 +108,19 @@ def battle(attackers, defenders, runs=RUNS):
                 unit_type = unit_data[k]["name"]
                 hit_score = unit_data[k]["defend"]
                 if n:
-                    print(f"Defender has {n} {unit_type}")
                     dhits += roll_dice(n, hit_score)
             print(f"Attacker hits {ahits} times with {len(attackers)} units")
             print(f"Defender hits {dhits} times with {len(defenders)} units")
-            print("Attacker...")
+            print("Attacker...", end=' ')
             if ahits:
                 defenders.choose_casualties(ahits)
+                print("")
             else:
                 print("Misses.")
-            print("Defender...")
+            print("\nDefender...", end=' ')
             if dhits:
                 attackers.choose_casualties(dhits)
+                print("")
             else:
                 print("Misses.")
 

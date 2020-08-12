@@ -17,7 +17,8 @@ $ pipenv run python axisandallies
 
 ## To-Do
 
-- [ ] Figure out why adding a bomber to defenders decreases their win probability.
+- [ ] Implement command line entry of numbers of units.
+- [x] Figure out why adding a bomber to defenders decreases their win probability.
 
 ## Implemented Units
 
