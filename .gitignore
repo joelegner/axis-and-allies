@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 report.txt
+
+# Ignore battle reports
+battles/*.txt
