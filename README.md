@@ -22,6 +22,10 @@ defender:
 $ make
 ```
 
+**Step 3**:
+
+Open `.txt` files in the `battles` directory to read the reports.
+
 ## To-Do
 
 - [ ] Implement command line entry of numbers of units.
