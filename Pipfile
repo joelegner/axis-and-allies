@@ -11,6 +11,7 @@ matplotlib = "*"
 pytest = "*"
 pytest-cov = "*"
 mypy = "0.782"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

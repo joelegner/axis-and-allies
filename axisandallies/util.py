@@ -8,6 +8,7 @@ import numpy as np # type: ignore
 import random
 import textwrap
 import typing
+import yaml
 
 WIDTH = 100
 
@@ -98,6 +99,21 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
     # Return the report
     return rpt
 
+def battle_from_yaml(filename: str) -> typing.List[str]:
+    rpt = [f"{filename} could not be opened."]
+    with open(filename) as yaml_file:
+        yaml_dict = yaml.load(yaml_file, Loader=yaml.SafeLoader)
+        attacking_army = Forces(attacking = True)
+        defending_army = Forces(attacking = False)
+        attacker_dict = yaml_dict["attacker"]
+        defender_dict = yaml_dict["defender"]
+        for k in attacker_dict.keys():
+            attacking_army.__dict__[k] = attacker_dict[k]
+        for k in defender_dict.keys():
+            defending_army.__dict__[k] = defender_dict[k]
+        rpt = battle(attacking_army, defending_army)
+    return rpt
+    
 
 def roll_dice(num, hit_score=1):
     hits = 0
