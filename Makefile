@@ -1,10 +1,16 @@
-SHELL := /bin/zsh
+SHELL=/bin/bash
+
+yaml_dir = battles
+yaml_files = $(wildcard $(yaml_dir)/*.yaml)
+report_files = $(yaml_files:.yaml=.txt)
 
 export PIPENV_IGNORE_VIRTUALENVS=1
 
 .PHONY: run
-run: build
-	pipenv run python axisandallies
+run: $(report_files)
+
+%.txt : %.yaml
+	pipenv run python run.py $<
 
 .PHONY: build
 build: clean
