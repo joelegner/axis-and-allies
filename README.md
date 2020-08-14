@@ -2,17 +2,24 @@
 
 This Python package runs many simulations of Axis and Allies battles and keeps track of which side wins each time.
 
-To run do either of the following.
+## Running
 
-```zsh
-$ pipenv shell
-$ python axisandallies
+**Step 1**: Add `yaml` files to the `battles` directory.
+
+File format example:
+```yaml
+attacker:
+    I: 4
+    F: 2
+defender:
+    I: 2
+    F: 2
 ```
 
-Or
+**Step 2**:
 
 ```zsh
-$ pipenv run python axisandallies
+$ make
 ```
 
 ## To-Do
