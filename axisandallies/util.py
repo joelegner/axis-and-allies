@@ -1,16 +1,22 @@
-import matplotlib.pyplot as plt # type: ignore
-import random
-import numpy as np # type: ignore
-from units import unit_data # type: ignore
+from .forces import attack_casualty_prefs # type: ignore
+from .forces import defend_casualty_prefs # type: ignore
+from .forces import Forces # type: ignore
+from .units import unit_data # type: ignore
 import copy
-from forces import Forces # type: ignore
-from forces import defend_casualty_prefs # type: ignore
-from forces import attack_casualty_prefs # type: ignore
+import matplotlib.pyplot as plt # type: ignore
+import numpy as np # type: ignore
+import random
+import textwrap
+import typing
 
+WIDTH = 100
 
 def battle(attackers: Forces, defenders: Forces, runs:int=1000):
     assert type(attackers) == Forces
     assert type(defenders) == Forces
+
+    # Create a new report as a list of strings
+    rpt = []
 
     attacker_wins = 0
     defender_wins = 0
@@ -24,47 +30,45 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
     rounds = 0
     for r in range(0, runs):
 
-        print(f"************Start run #{r+1} of {runs}")
-
-
+        rpt.append(f"************Start run #{r+1} of {runs}")
         attackers = copy.copy(at)
         defenders = copy.copy(de)
 
         while len(attackers) and len(defenders):
             rounds += 1
-            print(f"=========== Round {rounds}")
-            print("Attackers: %s" % attackers)
-            print("Defenders: %s" % defenders)
+            rpt.append(f"=========== Round {rounds}")
+            rpt.append("Attackers: %s" % attackers)
+            rpt.append("Defenders: %s" % defenders)
             ahits = 0
             dhits = 0
-            # print("Attacker rolls:")
+            # rpt.append("Attacker rolls:")
             for j in unit_data.keys():
                 n = attackers.__dict__[j]
                 unit_type = unit_data[j]["name"]
                 hit_score = unit_data[j]["attack"]
                 if n:
                     ahits += roll_dice(n, hit_score)
-            # print("Defender rolls:")
+            # rpt.append("Defender rolls:")
             for k in unit_data.keys():
                 n = defenders.__dict__[k]
                 unit_type = unit_data[k]["name"]
                 hit_score = unit_data[k]["defend"]
                 if n:
                     dhits += roll_dice(n, hit_score)
-            print(f"Attacker hits {ahits} times with {len(attackers)} units")
-            print(f"Defender hits {dhits} times with {len(defenders)} units")
-            print("Attacker...", end=' ')
+            rpt.append(f"Attacker hits {ahits} times with {len(attackers)} units")
+            rpt.append(f"Defender hits {dhits} times with {len(defenders)} units")
+            rpt.append("Attacker:")
             if ahits:
                 defenders.choose_casualties(ahits)
-                print("")
+                rpt.append("")
             else:
-                print("Misses.")
-            print("\nDefender...", end=' ')
+                rpt.append("Misses.")
+            rpt.append("\nDefender:")
             if dhits:
                 attackers.choose_casualties(dhits)
-                print("")
+                rpt.append("")
             else:
-                print("Misses.")
+                rpt.append("Misses.")
 
         defender_won = True
         if not len(defenders) and attackers.land_forces_count():
@@ -73,11 +77,11 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
         if defender_won:
             defender_wins += 1
             defender_units_left += len(defenders)
-            print("Defender wins************")
+            rpt.append("Defender wins************")
         else:
             attacker_wins += 1
             attacker_units_left += len(attackers)
-            print("Attacker wins************")
+            rpt.append("Attacker wins************")
 
     avg_rounds = float(rounds) / runs
 
@@ -87,9 +91,12 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
     avg_attacker_units_left = float(attacker_units_left) / runs
     avg_defender_units_left = float(defender_units_left) / runs
 
-    print(
-        f"in {runs} battles the attackers won {attacker_wins} times and the defenders won {defender_wins} times in an average of {avg_rounds:.2f} rounds.\nAttacker probability {prob_attacker_wins:.3f} with average of {avg_attacker_units_left:.2f} units left, defender {prob_defender_wins:.3f} with average of {avg_defender_units_left:.2f} units left."
+    rpt.append(
+        f"In {runs} of battles with {at} attacking {de} the attackers won {attacker_wins} times and the defenders won {defender_wins} times in an average of {avg_rounds:.2f} rounds. Attacker probability {prob_attacker_wins:.3f} with average of {avg_attacker_units_left:.2f} units left, defender {prob_defender_wins:.3f} with average of {avg_defender_units_left:.2f} units left."
     )
+
+    # Return the report
+    return rpt
 
 
 def roll_dice(num, hit_score=1):
@@ -98,3 +105,11 @@ def roll_dice(num, hit_score=1):
         if random.randint(1, 6) <= hit_score:
             hits += 1
     return hits
+
+def wprint(txt: str, file: typing.TextIO=None) -> None:
+    "Print a string wrapped to a file"
+    for wrapped_line in  textwrap.wrap(txt, width=WIDTH):
+        if file is not None:
+            print(wrapped_line, file=file)
+        else:
+            print(wrapped_line)

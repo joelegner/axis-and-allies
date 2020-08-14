@@ -1,4 +1,4 @@
-from units import unit_data # type: ignore
+from .units import unit_data # type: ignore
 from typing import Sized
 
 # Order in which casualties are selected for attacking
@@ -33,8 +33,8 @@ class Forces:
         return self.I + self.A + self.B + self.F + self.BB + self.S + self.AC
 
     def kill(self, key):
-        print(f"Killed 1 {unit_data[key]['name']}", end = ' ')
         self.__dict__[key] = self.__dict__[key] - 1
+        return f"Killed 1 {unit_data[key]['name']}"
 
     def _choose_casuality(self):
         global attack_casualty_prefs
