@@ -12,7 +12,7 @@ import yaml
 
 WIDTH = 100
 
-def battle(attackers: Forces, defenders: Forces, runs:int=1000):
+def battle(attackers: Forces, defenders: Forces, is_sea_battle=False, runs:int=1000):
     # Create a new report as a list of strings
     rpt = []
 
@@ -24,6 +24,11 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
 
     at = copy.copy(attackers)
     de = copy.copy(defenders)
+
+    if is_sea_battle:
+        rpt.append("Type of Battle: Sea Battle")
+    else:
+        rpt.append("Type of Battle: Land Battle")
 
     rounds = 0
     for r in range(0, runs):
@@ -100,6 +105,10 @@ def battle_from_yaml(filename: str) -> typing.List[str]:
     rpt = [f"{filename} could not be opened."]
     with open(filename) as yaml_file:
         yaml_dict = yaml.load(yaml_file, Loader=yaml.SafeLoader)
+        if "sea battle" in yaml_dict.keys():
+            is_sea_battle = yaml_dict["sea battle"]  # Can still be false
+        else:
+            is_sea_battle = False
         attacking_army = Forces(attacking = True)
         defending_army = Forces(attacking = False)
         attacker_dict = yaml_dict["attacker"]
@@ -108,7 +117,7 @@ def battle_from_yaml(filename: str) -> typing.List[str]:
             attacking_army.__dict__[k] = attacker_dict[k]
         for k in defender_dict.keys():
             defending_army.__dict__[k] = defender_dict[k]
-        rpt = battle(attacking_army, defending_army)
+        rpt = battle(attacking_army, defending_army, is_sea_battle=is_sea_battle)
     return rpt
     
 

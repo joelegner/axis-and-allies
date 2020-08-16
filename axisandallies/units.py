@@ -1,3 +1,10 @@
+from enum import Enum
+
+class Realm(Enum):
+    LAND = 1
+    SEA = 2
+    AIR = 3
+
 unit_data = {
     "I": {"name": "Infantry", "attack": 1, "defend": 2},
     "A": {"name": "Armor", "attack": 3, "defend": 2},
@@ -8,3 +15,7 @@ unit_data = {
     "BB": {"name": "Battleship", "attack": 4, "defend": 4},
     "AC": {"name": "Aircraft Carrier", "attack": 0, "defend": 1},
 }
+
+can_hit_air = ["I", "A", "F", "B", "BB", "T", "AC"]
+can_hit_land = ["I", "A", "F", "B", "BB"]
+can_hit_sea = ["I", "A", "F", "B", "BB", "T", "AC"]

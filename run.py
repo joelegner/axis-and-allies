@@ -19,8 +19,7 @@ def run_file(filenames: typing.List[str]) -> None:
     outfile = os.path.splitext(filename)[0] + ".txt"
 
     with open(outfile, "w") as f:
-        wprint("%s" % __file__, file=f)
-        wprint("Results", file=f)
+        wprint(f"Input file: {__file__}", file=f)
         wprint(report[-1] + "\n", file=f)
         wprint("%s" % datetime.datetime.now(), file=f)
         for line in report:
