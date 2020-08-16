@@ -31,3 +31,10 @@ coverage: test
 .PHONY: mypy
 mypy:
 	pipenv run mypy axisandallies
+
+.PHONY: touch
+touch:
+	touch battles/*.yaml
+
+.PHONY: rerun
+rerun: touch run
