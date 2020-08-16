@@ -13,9 +13,6 @@ import yaml
 WIDTH = 100
 
 def battle(attackers: Forces, defenders: Forces, runs:int=1000):
-    assert type(attackers) == Forces
-    assert type(defenders) == Forces
-
     # Create a new report as a list of strings
     rpt = []
 
@@ -30,7 +27,6 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
 
     rounds = 0
     for r in range(0, runs):
-
         rpt.append(f"************Start run #{r+1} of {runs}")
         attackers = copy.copy(at)
         defenders = copy.copy(de)
@@ -56,23 +52,24 @@ def battle(attackers: Forces, defenders: Forces, runs:int=1000):
                 hit_score = unit_data[k]["defend"]
                 if n:
                     dhits += roll_dice(n, hit_score)
-            rpt.append(f"Attacker hits {ahits} times with {len(attackers)} units")
-            rpt.append(f"Defender hits {dhits} times with {len(defenders)} units")
+            if ahits > 1:
+                rpt.append(f"Attacker hits {ahits} time")
+            else:
+                rpt.append(f"Attacker hits {ahits} times")
+            rpt.append(f"Defender hits {dhits} times")
             rpt.append("Attacker:")
             if ahits:
                 defenders.choose_casualties(ahits)
-                rpt.append("")
             else:
                 rpt.append("Misses.")
             rpt.append("\nDefender:")
             if dhits:
                 attackers.choose_casualties(dhits)
-                rpt.append("")
             else:
                 rpt.append("Misses.")
 
         defender_won = True
-        if not len(defenders) and attackers.land_forces_count():
+        if not len(defenders) and len(attackers):
             defender_won = False
 
         if defender_won:

@@ -2,13 +2,13 @@ from .units import unit_data # type: ignore
 from typing import Sized
 
 # Order in which casualties are selected for attacking
-attack_casualty_prefs = ["I", "A", "S", "F", "B", "BB", "AC"]
+attack_casualty_prefs = ["I", "A", "S", "T", "F", "B", "BB", "AC"]
 
 # Order in which casualties are selected for defence
-defend_casualty_prefs = ["I", "A", "S", "B", "F", "AC", "BB"]
+defend_casualty_prefs = ["I", "A", "S", "T", "B", "F", "AC", "BB"]
 
 class Forces:
-    def __init__(self, I=0, A=0, F=0, B=0, S=0, BB=0, AC=0, attacking=True):
+    def __init__(self, I=0, A=0, F=0, B=0, S=0, T=0, BB=0, AC=0, attacking=True):
         self.I = I  # Infantry
         self.A = A  # Armor
         self.B = B  # Bombers
@@ -16,6 +16,7 @@ class Forces:
         self.S = S  # Submarines
         self.BB = BB  # Battleships
         self.AC = AC  # Aircraft Carriers
+        self.T =T     # Transports
         self.attacking = attacking
 
     def __str__(self):
@@ -30,11 +31,10 @@ class Forces:
         return self.I + self.A
 
     def __len__(self) -> int:
-        return self.I + self.A + self.B + self.F + self.BB + self.S + self.AC
+        return self.I + self.A + self.B + self.F + self.BB + self.S + self.AC + self.T
 
     def kill(self, key):
         self.__dict__[key] = self.__dict__[key] - 1
-        return f"Killed 1 {unit_data[key]['name']}"
 
     def _choose_casuality(self):
         global attack_casualty_prefs

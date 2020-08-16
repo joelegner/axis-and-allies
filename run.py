@@ -20,7 +20,6 @@ def run_file(filenames: typing.List[str]) -> None:
 
     with open(outfile, "w") as f:
         wprint("%s" % __file__, file=f)
-        wprint("Two infantry and a fighter from India attack the two infantry and fighter in French Indo-China Burma.\n", file=f)
         wprint("Results", file=f)
         wprint(report[-1] + "\n", file=f)
         wprint("%s" % datetime.datetime.now(), file=f)
