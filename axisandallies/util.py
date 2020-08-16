@@ -12,7 +12,42 @@ import yaml
 
 WIDTH = 100
 
-def battle(attackers: Forces, defenders: Forces, is_sea_battle=False, runs:int=1000):
+class BattleResults:
+
+    def __init__(self, attackers: Forces, defenders: Forces) -> None:
+        self.attackers = copy.copy(attackers)
+        self.defenders = copy.copy(defenders)
+        self.attacker_wins: int = 0
+        self.defender_wins: int = 0
+
+    def set_wins_losses(self, attacker_wins: int, defender_wins: int) -> None:
+        self.attacker_wins = attacker_wins
+        self.defender_wins= defender_wins
+
+    def attack_prob(self):
+        dw = self.defender_wins
+        aw = self.attacker_wins
+        if aw and dw:
+            return float(aw)/(aw + dw)
+        elif aw and not dw:
+            return 1.0
+        else:
+            return None
+
+    def strength_ratio(self):
+        return float(self.attackers.total_strength())/self.defenders.total_strength()
+
+    def strength_per_unit(self):
+        "Return tuple of strength per unit (attacker, defender)"
+        a = self.attackers.total_strength()/len(self.attackers)
+        d = self.defenders.total_strength()/len(self.defenders)
+        return (a, d)
+
+    def len_ratio(self):
+        return float(len(self.attackers))/len(self.defenders)
+
+
+def battle(attackers: Forces, defenders: Forces, is_sea_battle=False, runs:int=1000, results=None):
     # Create a new report as a list of strings
     rpt = []
 
@@ -93,6 +128,9 @@ def battle(attackers: Forces, defenders: Forces, is_sea_battle=False, runs:int=1
 
     avg_attacker_units_left = float(attacker_units_left) / runs
     avg_defender_units_left = float(defender_units_left) / runs
+
+    if results:
+        results.set_wins_losses(attacker_wins, defender_wins)
 
     rpt.append(
         f"In {runs} of battles with {at} attacking {de} the attackers won {attacker_wins} times and the defenders won {defender_wins} times in an average of {avg_rounds:.2f} rounds. Attacker probability {prob_attacker_wins:.3f} with average of {avg_attacker_units_left:.2f} units left, defender {prob_defender_wins:.3f} with average of {avg_defender_units_left:.2f} units left."
