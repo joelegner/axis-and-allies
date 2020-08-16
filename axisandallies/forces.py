@@ -65,3 +65,9 @@ class Forces:
         for k in unit_data.keys():
             total_dice = total_dice + self.__dict__[k]*unit_data[k][verb]
         return total_dice
+
+    def total_cost(self):
+        total_cost = 0
+        for k in unit_data.keys():
+            total_cost = total_cost + self.__dict__[k]*unit_data[k]["cost"]
+        return total_cost

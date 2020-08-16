@@ -29,10 +29,10 @@ class BattleResults:
         aw = self.attacker_wins
         if aw and dw:
             return float(aw)/(aw + dw)
-        elif aw and not dw:
+        elif not dw:
             return 1.0
         else:
-            return None
+            return 0.0
 
     def strength_ratio(self):
         return float(self.attackers.total_strength())/self.defenders.total_strength()
