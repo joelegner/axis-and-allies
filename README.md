@@ -2,6 +2,10 @@
 
 This Python package runs many simulations of Axis and Allies battles and keeps track of which side wins each time.
 
+## Full Documentation
+
+[Documentation Index](docs/axisandallies/index.md)
+
 ## Running
 
 **Step 1**: Add `yaml` files to the `battles` directory.

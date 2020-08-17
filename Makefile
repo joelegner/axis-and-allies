@@ -38,3 +38,9 @@ touch:
 
 .PHONY: rerun
 rerun: touch run
+
+.PHONY: docs
+docs:
+	# Just a simple remake of all the docs in Markdown format
+	# The README.md file just points to these docs
+	pdoc --force --output-dir docs axisandallies

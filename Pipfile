@@ -12,6 +12,7 @@ pytest = "*"
 pytest-cov = "*"
 mypy = "0.782"
 pyyaml = "*"
+pdoc3 = "*"
 
 [requires]
 python_version = "3.8"
